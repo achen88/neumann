@@ -1,7 +1,8 @@
 class Node:
-    def __init__(self, val: str):
+    def __init__(self, val: str, parent):
         self.val = val
         self.children = []
+        self.parent = parent
 
     def add(self, child):
         self.children.append(child)
@@ -14,34 +15,41 @@ class Node:
 
 class Inventory:
     def __init__(self, file_load=None):
-        self.root = Node("root")
-        self.cache = {"root": self.root}
+        self.root = Node("root", None)
+        self.cache = {"root": [self.root]}
     # def lookup(self, location):
 
     # ignore cache collisions
     def put(self, item: str, location: str):
         # ignore nested locations
         # fetch location
-        if location in self.cache:
-            node = self.cache[location]
+        if location in self.cache and len(self.cache[location]) == 1:
+            node = self.cache[location][0]
+            child = Node(item, node)
             # item DNE
             if item not in self.cache:
-                child = Node(item)
-                node.add(child)
-                self.cache[item] = child
+                self.cache[item] = [child]
             # item exists, in separate location
             elif item not in map(lambda x: str(x), node.children):
                 # collision
                 print("-- item collision")
-                pass
+                self.cache[item].append(child)
             # item exists in this location
             else:
                 pass
+            
+            node.add(child)
+            return True
+        return False
+
+    def find(self, item: str):
+        if item in self.cache:
+            return list(map(lambda x: str(x.parent), self.cache[item]))
 
     def __str__(self):
         string = ""
-        for item, node in self.cache.items():
-            string += item + ": " + ", ".join(map(lambda x: str(x), node.children)) + "\n"
+        for item, nodes in self.cache.items():
+            string += item + ": " + " | ".join(map(lambda x: ", ".join(map(lambda y: str(y), x.children)), nodes)) + "\n"
         return string
 
 inv = Inventory()
@@ -50,3 +58,4 @@ inv.put("bedroom", "root")
 inv.put("bed", "root")
 inv.put("bed", "bedroom")
 print(inv)
+print(inv.find("bed"))
