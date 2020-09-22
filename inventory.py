@@ -17,7 +17,26 @@ class Inventory:
     def __init__(self, file_load=None):
         self.root = Node("root", None)
         self.cache = {"root": [self.root]}
-    # def lookup(self, location):
+
+    def lookup(self, requestedLocation):
+        words = requestedLocation.split()
+        i = 1
+        while i <= len(words):
+            temp = " ".join(words[-i:])
+            if temp in self.cache:
+                if len(self.cache[temp]) == 1:
+                    return self.cache[temp][0]
+                elif " ".join(words[:-i]) != "":
+                    parent = self.lookup(" ".join(words[:-i]))
+                    if parent != None:
+                        for node in self.cache[temp]:
+                            if node.parent == parent:
+                                return node
+                else:
+                    pass
+            i += 1
+        return None
+            
 
     # ignore cache collisions
     def put(self, item: str, location: str):
@@ -53,9 +72,13 @@ class Inventory:
         return string
 
 inv = Inventory()
-inv.put("kitchen", "root")
+inv.put("kitchen l", "root")
+inv.put("cabinet", "kitchen l")
 inv.put("bedroom", "root")
 inv.put("bed", "root")
 inv.put("bed", "bedroom")
+inv.put("my lai", "root")
+inv.put("my lai", "kitchen l")
 print(inv)
+print(inv.lookup("kitchen l my lai").parent)
 print(inv.find("bed"))
