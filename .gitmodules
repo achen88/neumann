@@ -1,0 +1,6 @@
+[submodule "tplink-smartplug"]
+	path = tplink-smartplug
+	url = git@github.com:softScheck/tplink-smartplug.git
+[submodule "bookish-enigma"]
+	path = bookish-enigma
+	url = git@github.com:achen88/bookish-enigma.git
