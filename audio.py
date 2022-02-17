@@ -6,6 +6,13 @@ from contextlib import contextmanager
 
 DETECT_DING="resources/ding.wav"
 
+def py_error_handler(filename, line, function, err, fmt):
+    pass
+
+ERROR_HANDLER_FUNC = CFUNCTYPE(None, c_char_p, c_int, c_char_p, c_int, c_char_p)
+
+c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
+
 @contextmanager
 def no_alsa_error():
     try:
@@ -38,3 +45,4 @@ def play_audio_file(fname=DETECT_DING):
     stream_out.stop_stream()
     stream_out.close()
     audio.terminate()
+    
