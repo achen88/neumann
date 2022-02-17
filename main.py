@@ -2,13 +2,16 @@
 
 import speech_recognition as sr
 import requests
+from audio import *
 
-# obtain audio from the microphone
-r = sr.Recognizer()
-with sr.Microphone() as source:
-    print("Say something!")
-    audio = r.listen(source, snowboy_configuration=("./snowboy/examples/Python3", ["./snowboy/resources/models/neumann.pmdl"]))
-    # audio = r.listen(source)
+with no_alsa_error():
+    # obtain audio from the microphone
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Say something!")
+        audio = r.listen(source, snowboy_configuration=("./snowboy/examples/Python3", ["./snowboy/resources/models/neumann.pmdl"]))
+        # audio = r.listen(source)
+        play_audio_file()
 
 # recognize speech using Google Speech Recognition
 try:
